@@ -1,8 +1,8 @@
 package com.example.sampleproject.ui.listaeventos
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.example.sampleproject.R
 import com.example.sampleproject.databinding.FragmentListaEventosBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +21,7 @@ class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos) {
         _binding = FragmentListaEventosBinding.bind(view)
 
         binding.apply {
-            
+
         }
     }
 
