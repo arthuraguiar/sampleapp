@@ -10,9 +10,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.ItemEventoBinding
-import java.text.DateFormat
+import com.example.sampleproject.utils.formatToDate
+import java.text.SimpleDateFormat
 import java.util.*
-
 
 class EventosAdapter() :
     ListAdapter<EventoResponse, EventosAdapter.EventosViewHolder>(DiffCallback()) {
@@ -37,7 +37,9 @@ class EventosAdapter() :
         fun bind(evento: EventoResponse) {
             binding.apply {
                 textViewPrice.text = String.format("R$ %.2f", evento.price)
-                textViewDate.text = evento.date
+
+                textViewDate.text = evento.date.formatToDate()
+
                 Glide.with(itemView)
                     .load(evento.image)
                     .centerCrop()
@@ -56,6 +58,5 @@ class EventosAdapter() :
         override fun areContentsTheSame(oldItem: EventoResponse, newItem: EventoResponse) =
             oldItem == newItem
     }
-
 
 }

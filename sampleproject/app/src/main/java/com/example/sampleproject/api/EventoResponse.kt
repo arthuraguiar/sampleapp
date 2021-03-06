@@ -1,11 +1,10 @@
 package com.example.sampleproject.api
 
 import java.math.BigDecimal
-import java.util.*
 
 data class EventoResponse(
      val people: List<Pessoa>,
-     val date: String,
+     val date: Long,
      val description: String,
      val image: String,
 
