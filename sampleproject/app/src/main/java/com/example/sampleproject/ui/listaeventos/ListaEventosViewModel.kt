@@ -9,6 +9,8 @@ import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.data.EventosRepository
 import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class ListaEventosViewModel @ViewModelInject constructor(
@@ -22,10 +24,14 @@ class ListaEventosViewModel @ViewModelInject constructor(
 
     val loading = MutableLiveData(false)
 
+    private val eventoChannel = Channel<EventoTrigger>()
+
+    val eventoTrigger = eventoChannel.receiveAsFlow()
+
     fun fetchEventos() {
         viewModelScope.launch(Dispatchers.Main) {
             loading.value = true
-            when (val response = eventosRepository.getEventos()) {
+            when (val response = eventosRepository.getEventos(Dispatchers.Main)) {
                 is ResultWrapper.NetworkError ->{}
                 is ResultWrapper.GenericError -> {}
                 is ResultWrapper.Success -> {
@@ -34,5 +40,13 @@ class ListaEventosViewModel @ViewModelInject constructor(
             }
             loading.value = false
         }
+    }
+
+    fun onEventoClicked(evento: EventoResponse) = viewModelScope.launch{
+        eventoChannel.send(EventoTrigger.NavigateToEventoScreen(evento))
+    }
+
+    sealed class EventoTrigger{
+        data class NavigateToEventoScreen(val evento:EventoResponse): EventoTrigger()
     }
 }

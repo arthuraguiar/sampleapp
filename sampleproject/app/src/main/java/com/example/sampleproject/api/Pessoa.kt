@@ -1,3 +1,10 @@
 package com.example.sampleproject.api
 
-data class Pessoa()
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Pessoa(
+    private val nome: String
+): Parcelable
+

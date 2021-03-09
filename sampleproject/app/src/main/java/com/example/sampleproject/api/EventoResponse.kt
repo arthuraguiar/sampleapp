@@ -1,7 +1,10 @@
 package com.example.sampleproject.api
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 
+@Parcelize
 data class EventoResponse(
      val people: List<Pessoa>,
      val date: Long,
@@ -15,8 +18,4 @@ data class EventoResponse(
      val price: BigDecimal,
      val title: String,
      val id: Int
-)
-
-data class Pessoa(
-     private val nome: String
-)
+):Parcelable

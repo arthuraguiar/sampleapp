@@ -14,7 +14,7 @@ import com.example.sampleproject.utils.formatToDate
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EventosAdapter() :
+class EventosAdapter(val eventoOnClickListener: EventoOnClickListener) :
     ListAdapter<EventoResponse, EventosAdapter.EventosViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventosViewHolder {
@@ -33,6 +33,16 @@ class EventosAdapter() :
     inner class EventosViewHolder(private val binding: ItemEventoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.apply {
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if(position != RecyclerView.NO_POSITION){
+                        eventoOnClickListener.onItemClick(getItem(position))
+                    }
+                }
+            }
+        }
 
         fun bind(evento: EventoResponse) {
             binding.apply {
@@ -57,6 +67,10 @@ class EventosAdapter() :
 
         override fun areContentsTheSame(oldItem: EventoResponse, newItem: EventoResponse) =
             oldItem == newItem
+    }
+
+    interface EventoOnClickListener {
+        fun onItemClick(evento: EventoResponse)
     }
 
 }
