@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.data.EventosRepository
+import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ListaEventosViewModel @ViewModelInject constructor(
     private val eventosRepository: EventosRepository
@@ -20,15 +20,19 @@ class ListaEventosViewModel @ViewModelInject constructor(
     val eventos: LiveData<List<EventoResponse>>
         get() = _eventos
 
-    fun fetchEventos() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val res = eventosRepository.getEventos()
+    val loading = MutableLiveData(false)
 
-            if (res.isSuccessful) {
-                withContext(Dispatchers.Main) {
-                    _eventos.value = res.body()
+    fun fetchEventos() {
+        viewModelScope.launch(Dispatchers.Main) {
+            loading.value = true
+            when (val response = eventosRepository.getEventos()) {
+                is ResultWrapper.NetworkError ->{}
+                is ResultWrapper.GenericError -> {}
+                is ResultWrapper.Success -> {
+                    response.value.run { _eventos.value  = this}
                 }
             }
+            loading.value = false
         }
     }
 }

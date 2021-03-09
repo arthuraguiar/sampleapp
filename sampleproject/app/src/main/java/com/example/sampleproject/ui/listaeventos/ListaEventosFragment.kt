@@ -38,6 +38,10 @@ class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos) {
         viewModel.eventos.observe(viewLifecycleOwner) {
             evensosAdapter.submitList(it)
         }
+
+        viewModel.loading.observe(viewLifecycleOwner){
+            loading_event_layout.visibility = if(it) View.VISIBLE else View.GONE
+        }
     }
 
 
