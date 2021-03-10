@@ -43,8 +43,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
                 populateBinding(this, evento)
             }
         }
-
-
+        
         viewModel.evento.observe(viewLifecycleOwner) { evento ->
             binding.apply {
                 populateBinding(this, evento)
@@ -60,7 +59,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
         fragmentEventoBinding.dataEventoTextview.text = evento.date.formatToDate()
         fragmentEventoBinding.eventoResumoTextview.text = evento.description
         fragmentEventoBinding.eventoTitleTextview.text = evento.title
-        Glide.with(fragmentEventoBinding.root)
+        Glide.with(this)
             .load(evento.image)
             .centerCrop()
             .transition(DrawableTransitionOptions.withCrossFade())

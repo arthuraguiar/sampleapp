@@ -21,11 +21,9 @@ class EventoViewModel @ViewModelInject constructor(
     val evento: LiveData<EventoResponse>
         get() = _evento
 
-    val loading = MutableLiveData(false)
 
     fun getEvento() {
         viewModelScope.launch(Dispatchers.Main) {
-            loading.value = true
             when (val response =
                 eventosRepository.getEvento(eventoArgs?.id ?: 0, Dispatchers.Main)) {
                 is ResultWrapper.NetworkError -> {
@@ -36,7 +34,6 @@ class EventoViewModel @ViewModelInject constructor(
                     response.value.run { _evento.value = this }
                 }
             }
-            loading.value = false
         }
     }
 }
