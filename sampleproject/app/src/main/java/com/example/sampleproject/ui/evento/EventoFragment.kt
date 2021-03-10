@@ -43,7 +43,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
                 populateBinding(this, evento)
             }
         }
-        
+
         viewModel.evento.observe(viewLifecycleOwner) { evento ->
             binding.apply {
                 populateBinding(this, evento)
