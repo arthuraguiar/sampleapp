@@ -12,4 +12,7 @@ import javax.inject.Singleton
 class EventosRepository @Inject constructor(private val eventosApi: EventosApi) {
     suspend fun getEventos(dispatcher: CoroutineDispatcher = Dispatchers.IO) =
         safeApiCall(dispatcher) { eventosApi.getEventos() }
+
+    suspend fun getEvento(eventoId:Int, dispatcher: CoroutineDispatcher = Dispatchers.IO) =
+        safeApiCall(dispatcher) { eventosApi.getEvento(eventoId) }
 }
