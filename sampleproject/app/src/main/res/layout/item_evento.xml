@@ -9,7 +9,9 @@
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/foto_do_evento_listado" />
+        android:transitionName="imageView"
+        android:contentDescription="@string/foto_do_evento_listado"
+        tools:targetApi="lollipop" />
 
     <View
         android:layout_width="match_parent"

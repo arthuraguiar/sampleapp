@@ -12,9 +12,11 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/evento_imageview"
+            android:id="@+id/imageview"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:transitionName="imageView"
+            app:layout_collapseMode="parallax"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -28,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/evento_imageview"
+            app:layout_constraintTop_toBottomOf="@id/imageview"
             tools:text="Nome do Evento" />
 
         <LinearLayout

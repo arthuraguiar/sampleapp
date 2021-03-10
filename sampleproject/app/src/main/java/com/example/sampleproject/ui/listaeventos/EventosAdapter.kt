@@ -2,6 +2,7 @@ package com.example.sampleproject.ui.listaeventos
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,6 @@ import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.ItemEventoBinding
 import com.example.sampleproject.utils.formatToDate
-import java.text.SimpleDateFormat
-import java.util.*
 
 class EventosAdapter(val eventoOnClickListener: EventoOnClickListener) :
     ListAdapter<EventoResponse, EventosAdapter.EventosViewHolder>(DiffCallback()) {
@@ -37,8 +36,8 @@ class EventosAdapter(val eventoOnClickListener: EventoOnClickListener) :
             binding.apply {
                 root.setOnClickListener {
                     val position = adapterPosition
-                    if(position != RecyclerView.NO_POSITION){
-                        eventoOnClickListener.onItemClick(getItem(position))
+                    if (position != RecyclerView.NO_POSITION) {
+                        eventoOnClickListener.onItemClick(getItem(position), this.imageView)
                     }
                 }
             }
@@ -70,7 +69,7 @@ class EventosAdapter(val eventoOnClickListener: EventoOnClickListener) :
     }
 
     interface EventoOnClickListener {
-        fun onItemClick(evento: EventoResponse)
+        fun onItemClick(evento: EventoResponse, imageView: ImageView)
     }
 
 }

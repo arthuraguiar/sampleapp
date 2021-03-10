@@ -1,13 +1,14 @@
 package com.example.sampleproject.ui.evento
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.sampleproject.R
+import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.FragmentEventoBinding
 import com.example.sampleproject.utils.formatToDate
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +22,14 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
 
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            sharedElementEnterTransition =
+                TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,30 +38,34 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
 
         viewModel.getEvento()
 
-        binding.apply {
-            this.eventoResumoTextview.movementMethod = ScrollingMovementMethod()
+        viewModel.eventoArgs?.let { evento ->
+            binding.apply {
+                populateBinding(this, evento)
+            }
         }
+
 
         viewModel.evento.observe(viewLifecycleOwner) { evento ->
             binding.apply {
-                this.dataEventoTextview.text = evento.date.formatToDate()
-                this.eventoResumoTextview.text = evento.description
-                this.eventoTitleTextview.text = evento.title
-                Glide.with(this.root)
-                    .load(evento.image)
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_baseline_error_24)
-                    .into(this.eventoImageview)
+                populateBinding(this, evento)
             }
         }
 
-        viewModel.loading.observe(viewLifecycleOwner) {
-            binding.apply {
-                this.eventoProgressbarHolder.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            }
-        }
+    }
 
+    private fun populateBinding(
+        fragmentEventoBinding: FragmentEventoBinding,
+        evento: EventoResponse
+    ) {
+        fragmentEventoBinding.dataEventoTextview.text = evento.date.formatToDate()
+        fragmentEventoBinding.eventoResumoTextview.text = evento.description
+        fragmentEventoBinding.eventoTitleTextview.text = evento.title
+        Glide.with(fragmentEventoBinding.root)
+            .load(evento.image)
+            .centerCrop()
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .error(R.drawable.ic_baseline_error_24)
+            .into(fragmentEventoBinding.imageview)
     }
 
 }

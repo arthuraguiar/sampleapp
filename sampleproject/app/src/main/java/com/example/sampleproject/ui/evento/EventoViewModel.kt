@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 class EventoViewModel @ViewModelInject constructor(
     private val eventosRepository: EventosRepository,
     @Assisted private val state: SavedStateHandle
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private val eventoArgs = state.get<EventoResponse>("evento")
+    val eventoArgs = state.get<EventoResponse>("evento")
 
     private val _evento = MutableLiveData<EventoResponse>()
 
@@ -23,14 +23,17 @@ class EventoViewModel @ViewModelInject constructor(
 
     val loading = MutableLiveData(false)
 
-    fun getEvento(){
+    fun getEvento() {
         viewModelScope.launch(Dispatchers.Main) {
             loading.value = true
-            when (val response = eventosRepository.getEvento(eventoArgs?.id?:0,Dispatchers.Main)) {
-                is ResultWrapper.NetworkError ->{}
-                is ResultWrapper.GenericError -> {}
+            when (val response =
+                eventosRepository.getEvento(eventoArgs?.id ?: 0, Dispatchers.Main)) {
+                is ResultWrapper.NetworkError -> {
+                }
+                is ResultWrapper.GenericError -> {
+                }
                 is ResultWrapper.Success -> {
-                    response.value.run { _evento.value  = this}
+                    response.value.run { _evento.value = this }
                 }
             }
             loading.value = false

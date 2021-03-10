@@ -1,5 +1,6 @@
 package com.example.sampleproject.ui.listaeventos
 
+import android.widget.ImageView
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,11 +43,11 @@ class ListaEventosViewModel @ViewModelInject constructor(
         }
     }
 
-    fun onEventoClicked(evento: EventoResponse) = viewModelScope.launch{
-        eventoChannel.send(EventoTrigger.NavigateToEventoScreen(evento))
+    fun onEventoClicked(evento: EventoResponse, imageView: ImageView) = viewModelScope.launch{
+        eventoChannel.send(EventoTrigger.NavigateToEventoScreen(evento, imageView))
     }
 
     sealed class EventoTrigger{
-        data class NavigateToEventoScreen(val evento:EventoResponse): EventoTrigger()
+        data class NavigateToEventoScreen(val evento:EventoResponse, val imageView: ImageView): EventoTrigger()
     }
 }

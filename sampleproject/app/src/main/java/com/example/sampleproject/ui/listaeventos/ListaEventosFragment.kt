@@ -2,9 +2,11 @@ package com.example.sampleproject.ui.listaeventos
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sampleproject.R
@@ -15,7 +17,8 @@ import kotlinx.android.synthetic.main.fragment_lista_eventos.*
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos), EventosAdapter.EventoOnClickListener {
+class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos),
+    EventosAdapter.EventoOnClickListener {
 
     private val viewModel: ListaEventosViewModel by viewModels()
 
@@ -43,17 +46,20 @@ class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos), EventosA
             evensosAdapter.submitList(it)
         }
 
-        viewModel.loading.observe(viewLifecycleOwner){
-            loading_event_layout.visibility = if(it) View.VISIBLE else View.GONE
+        viewModel.loading.observe(viewLifecycleOwner) {
+            loading_event_layout.visibility = if (it) View.VISIBLE else View.GONE
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.eventoTrigger.collect { eventTrigger ->
-                when(eventTrigger){
-                    is ListaEventosViewModel.EventoTrigger.NavigateToEventoScreen ->{
+                when (eventTrigger) {
+                    is ListaEventosViewModel.EventoTrigger.NavigateToEventoScreen -> {
+                        val extras = FragmentNavigatorExtras(
+                            eventTrigger.imageView to "imageView"
+                        )
                         val action = ListaEventosFragmentDirections
                             .actionListaEventosFragmentToEventoFragment(eventTrigger.evento)
-                        findNavController().navigate(action)
+                        findNavController().navigate(action, extras)
                     }
                 }
             }
@@ -61,8 +67,8 @@ class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos), EventosA
         }
     }
 
-    override fun onItemClick(evento: EventoResponse) {
-        viewModel.onEventoClicked(evento)
+    override fun onItemClick(evento: EventoResponse, imageView: ImageView) {
+        viewModel.onEventoClicked(evento, imageView)
     }
 
 
