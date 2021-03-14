@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.ItemEventoBinding
@@ -45,16 +46,21 @@ class EventosAdapter(val eventoOnClickListener: EventoOnClickListener) :
 
         fun bind(evento: EventoResponse) {
             binding.apply {
+                textViewTitle.text = evento.title
+
                 textViewPrice.text = String.format("R$ %.2f", evento.price)
 
                 textViewDate.text = evento.date.formatToDate()
 
-                Glide.with(itemView)
-                    .load(evento.image)
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_baseline_error_24)
-                    .into(imageView)
+                imageView.apply {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        transitionName = evento.title
+                    }
+                    Glide.with(itemView)
+                        .load(evento.image)
+                        .error(R.drawable.ic_baseline_error_24)
+                        .into(this)
+                }
             }
         }
     }

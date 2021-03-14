@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.FragmentEventoBinding
@@ -59,12 +59,17 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
         fragmentEventoBinding.dataEventoTextview.text = evento.date.formatToDate()
         fragmentEventoBinding.eventoResumoTextview.text = evento.description
         fragmentEventoBinding.eventoTitleTextview.text = evento.title
-        Glide.with(this)
-            .load(evento.image)
-            .centerCrop()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .error(R.drawable.ic_baseline_error_24)
-            .into(fragmentEventoBinding.imageview)
+
+        fragmentEventoBinding.imageview.apply {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                this.transitionName = evento.title
+            }
+            Glide.with(this)
+                .load(evento.image)
+                .error(R.drawable.ic_baseline_error_24)
+                .into(this)
+        }
     }
+
 
 }

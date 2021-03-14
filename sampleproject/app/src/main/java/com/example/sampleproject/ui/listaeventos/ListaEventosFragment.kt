@@ -46,16 +46,12 @@ class ListaEventosFragment : Fragment(R.layout.fragment_lista_eventos),
             evensosAdapter.submitList(it)
         }
 
-        viewModel.loading.observe(viewLifecycleOwner) {
-            loading_event_layout.visibility = if (it) View.VISIBLE else View.GONE
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.eventoTrigger.collect { eventTrigger ->
                 when (eventTrigger) {
                     is ListaEventosViewModel.EventoTrigger.NavigateToEventoScreen -> {
                         val extras = FragmentNavigatorExtras(
-                            eventTrigger.imageView to "imageView"
+                            eventTrigger.imageView to eventTrigger.evento.title
                         )
                         val action = ListaEventosFragmentDirections
                             .actionListaEventosFragmentToEventoFragment(eventTrigger.evento)

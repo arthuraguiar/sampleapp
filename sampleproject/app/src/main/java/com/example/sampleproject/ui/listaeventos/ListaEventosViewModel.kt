@@ -23,15 +23,12 @@ class ListaEventosViewModel @ViewModelInject constructor(
     val eventos: LiveData<List<EventoResponse>>
         get() = _eventos
 
-    val loading = MutableLiveData(false)
-
     private val eventoChannel = Channel<EventoTrigger>()
 
     val eventoTrigger = eventoChannel.receiveAsFlow()
 
     fun fetchEventos() {
         viewModelScope.launch(Dispatchers.Main) {
-            loading.value = true
             when (val response = eventosRepository.getEventos(Dispatchers.Main)) {
                 is ResultWrapper.NetworkError ->{}
                 is ResultWrapper.GenericError -> {}
@@ -39,7 +36,6 @@ class ListaEventosViewModel @ViewModelInject constructor(
                     response.value.run { _eventos.value  = this}
                 }
             }
-            loading.value = false
         }
     }
 
