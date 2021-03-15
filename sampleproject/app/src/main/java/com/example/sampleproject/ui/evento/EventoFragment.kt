@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.databinding.FragmentEventoBinding
 import com.example.sampleproject.utils.formatToDate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class EventoFragment : Fragment(R.layout.fragment_evento) {
@@ -29,7 +32,6 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
                 TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,6 +52,24 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
             }
         }
 
+        binding.apply {
+            checkInButton.setOnClickListener {
+                viewModel.onCheckinButtonClicked()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.eventoAction.collect { eventoAction ->
+                when (eventoAction) {
+                    is EventoViewModel.EventoAction.NavigateToCheckinDialog -> {
+                        val action =
+                            EventoFragmentDirections
+                                .actionGlobalCheckInDialogFragment(eventoAction.evento)
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+        }
     }
 
     private fun populateBinding(
@@ -70,6 +90,5 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
                 .into(this)
         }
     }
-
 
 }

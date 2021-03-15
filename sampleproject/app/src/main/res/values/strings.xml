@@ -5,4 +5,6 @@
     <string name="foto_do_evento_listado">Foto do Evento Listado</string>
     <string name="loading">Loading...</string>
     <string name="data_do_evento">Data do Evento:</string>
+    <string name="nome">Nome</string>
+    <string name="email">Email</string>
 </resources>

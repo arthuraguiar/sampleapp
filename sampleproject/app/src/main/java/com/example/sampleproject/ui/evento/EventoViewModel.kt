@@ -5,8 +5,11 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.data.EventosRepository
+import com.example.sampleproject.ui.listaeventos.ListaEventosViewModel
 import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class EventoViewModel @ViewModelInject constructor(
@@ -21,6 +24,9 @@ class EventoViewModel @ViewModelInject constructor(
     val evento: LiveData<EventoResponse>
         get() = _evento
 
+    private val eventoChannel = Channel<EventoAction>()
+
+    val eventoAction = eventoChannel.receiveAsFlow()
 
     fun getEvento() {
         viewModelScope.launch(Dispatchers.Main) {
@@ -35,5 +41,13 @@ class EventoViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    fun onCheckinButtonClicked() = viewModelScope.launch {
+        eventoChannel.send(EventoAction.NavigateToCheckinDialog(evento.value!!))
+    }
+
+    sealed class EventoAction(){
+        data class NavigateToCheckinDialog(val evento:EventoResponse): EventoAction()
     }
 }
