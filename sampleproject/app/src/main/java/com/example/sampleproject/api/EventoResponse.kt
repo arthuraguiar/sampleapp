@@ -19,3 +19,10 @@ data class EventoResponse(
      val title: String,
      val id: Int
 ):Parcelable
+
+
+data class EventoCheckinPost(
+  val eventId: Int,
+  val name: String,
+  val email: String
+)
