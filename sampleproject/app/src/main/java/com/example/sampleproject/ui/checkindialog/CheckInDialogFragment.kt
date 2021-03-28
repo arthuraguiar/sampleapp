@@ -49,7 +49,7 @@ class CheckInDialogFragment : DialogFragment(){
                         dismissDialog()
                     }
                     is CheckInDialogViewModel.CheckInResponse.OnCheckInError ->{
-
+                        val teste = ""
                     }
                 }
             }
