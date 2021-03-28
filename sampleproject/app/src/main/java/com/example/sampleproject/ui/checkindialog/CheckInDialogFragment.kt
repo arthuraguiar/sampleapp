@@ -5,12 +5,12 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.example.sampleproject.R
+import androidx.lifecycle.lifecycleScope
+import com.example.sampleproject.databinding.CheckinDialogBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.checkin_dialog.view.*
+import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
@@ -18,24 +18,45 @@ class CheckInDialogFragment : DialogFragment(){
 
     private val viewModel: CheckInDialogViewModel by viewModels()
 
+    private lateinit var binding: CheckinDialogBinding
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val viewInflated: View = LayoutInflater.from(context)
-            .inflate(R.layout.checkin_dialog, view as ViewGroup?, false)
+        binding = CheckinDialogBinding
+            .inflate(LayoutInflater.from(context))
+        val builder = AlertDialog.Builder(context)
+        builder.setView(binding.root)
 
-        /*Adicionadr validacao de email e resposta de request*/
-
-        val editNome = viewInflated.nomeEditTextInput
-        val editEmail = viewInflated.emailEditTextInput
-        return AlertDialog
-            .Builder(requireContext())
-            .setTitle("Check In")
-            .setView(viewInflated)
-            .setMessage("Deseja Realizar checkin no evento?")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Confirm"){ _, _ ->
-                viewModel.checkIn(editNome.text.toString(), editEmail.text.toString())
+        binding.apply {
+            checkinButton.setOnClickListener {
+                viewModel.checkIn(
+                    nomeEditTextInput.text.toString(),
+                    emailEditTextInput.text.toString()
+                )
             }
-            .create()
+            cancelCheckinButton.setOnClickListener {
+                dismissDialog()
+            }
+        }
+        return builder.create()
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.checkInTtrigger.collect {checkInResponse ->
+                when(checkInResponse){
+                    is CheckInDialogViewModel.CheckInResponse.OnCheckInSucess ->{
+                        dismissDialog()
+                    }
+                    is CheckInDialogViewModel.CheckInResponse.OnCheckInError ->{
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun dismissDialog() = this.dismiss()
 
 }

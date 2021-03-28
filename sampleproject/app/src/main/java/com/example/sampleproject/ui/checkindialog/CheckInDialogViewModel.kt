@@ -12,6 +12,8 @@ import com.example.sampleproject.utils.Constantes.EVENTO
 import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class CheckInDialogViewModel @ViewModelInject constructor(
@@ -21,6 +23,10 @@ class CheckInDialogViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     private val eventoArgs = state.get<EventoResponse>(EVENTO)
+
+    private val checkInChannel = Channel<CheckInResponse>()
+
+    val checkInTtrigger = checkInChannel.receiveAsFlow()
 
     fun checkIn(nome: String, email: String) {
         applicationScope.launch(Dispatchers.Main) {
@@ -36,9 +42,15 @@ class CheckInDialogViewModel @ViewModelInject constructor(
                 is ResultWrapper.NetworkError ->{}
                 is ResultWrapper.GenericError -> {}
                 is ResultWrapper.Success ->{
+                    checkInChannel.send(CheckInResponse.OnCheckInSucess)
                 }
             }
         }
+    }
+
+    sealed class CheckInResponse{
+        object OnCheckInSucess:CheckInResponse()
+        data class OnCheckInError(val msg: String): CheckInResponse()
     }
 
 }
