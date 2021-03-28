@@ -5,7 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.data.EventosRepository
-import com.example.sampleproject.ui.listaeventos.ListaEventosViewModel
+import com.example.sampleproject.utils.Constantes.EVENTO
 import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +17,7 @@ class EventoViewModel @ViewModelInject constructor(
     @Assisted private val state: SavedStateHandle
 ) : ViewModel() {
 
-    val eventoArgs = state.get<EventoResponse>("evento")
+    val eventoArgs = state.get<EventoResponse>(EVENTO)
 
     private val _evento = MutableLiveData<EventoResponse>()
 
@@ -44,7 +44,9 @@ class EventoViewModel @ViewModelInject constructor(
     }
 
     fun onCheckinButtonClicked() = viewModelScope.launch {
-        eventoChannel.send(EventoAction.NavigateToCheckinDialog(evento.value!!))
+        evento.value?.let {eventoResponse ->
+            eventoChannel.send(EventoAction.NavigateToCheckinDialog(eventoResponse))
+        }
     }
 
     sealed class EventoAction(){

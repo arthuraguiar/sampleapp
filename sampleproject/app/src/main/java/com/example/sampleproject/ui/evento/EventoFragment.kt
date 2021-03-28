@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
@@ -21,9 +20,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
 
     private val viewModel: EventoViewModel by viewModels()
 
-    private var _binding: FragmentEventoBinding? = null
-
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentEventoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +33,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentEventoBinding.bind(view)
+        binding = FragmentEventoBinding.bind(view)
 
         viewModel.getEvento()
 

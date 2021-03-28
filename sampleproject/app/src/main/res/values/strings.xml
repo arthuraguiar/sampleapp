@@ -7,4 +7,6 @@
     <string name="data_do_evento">Data do Evento:</string>
     <string name="nome">Nome</string>
     <string name="email">Email</string>
+    <string name="check_in">Check In</string>
+    <string name="retry">Retry</string>
 </resources>

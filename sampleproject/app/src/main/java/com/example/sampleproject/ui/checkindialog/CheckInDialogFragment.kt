@@ -22,6 +22,8 @@ class CheckInDialogFragment : DialogFragment(){
         val viewInflated: View = LayoutInflater.from(context)
             .inflate(R.layout.checkin_dialog, view as ViewGroup?, false)
 
+        /*Adicionadr validacao de email e resposta de request*/
+
         val editNome = viewInflated.nomeEditTextInput
         val editEmail = viewInflated.emailEditTextInput
         return AlertDialog
