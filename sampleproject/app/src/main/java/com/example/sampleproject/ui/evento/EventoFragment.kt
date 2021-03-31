@@ -65,17 +65,21 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.eventoAction.collect { eventoAction ->
                 when (eventoAction) {
-                    is EventoViewModel.EventoAction.NavigateToCheckinDialog -> {
+                    is EventoViewModel.EventoAction.InflateCheckinDialog -> {
                         inflateFragment()
                     }
                     is EventoViewModel.EventoAction.OnCheckInSucess ->{
                         dialogBinding?.checkinLoading?.visibility = View.GONE
-                        Snackbar.make(requireView(), eventoAction.msg, Snackbar.LENGTH_LONG).show()
+                        showSnackBarMsg(eventoAction.msg)
                         dialog?.dismiss()
                     }
                     is EventoViewModel.EventoAction.OnCheckInError ->{
                         dialogBinding?.checkinLoading?.visibility = View.GONE
-                        Snackbar.make(requireView(), eventoAction.msg, Snackbar.LENGTH_LONG).show()
+                        showSnackBarMsg(eventoAction.msg)
+                    }
+                    is EventoViewModel.EventoAction.OnEmailInvalid ->{
+                        dialogBinding?.checkinLoading?.visibility = View.GONE
+                        showSnackBarMsg(eventoAction.msg)
                     }
                 }
             }
@@ -123,4 +127,7 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
         dialog?.show()
     }
 
+    private fun showSnackBarMsg(msg:String){
+        Snackbar.make(requireView(), msg, Snackbar.LENGTH_LONG).show()
+    }
 }
