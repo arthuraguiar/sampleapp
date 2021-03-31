@@ -3,9 +3,12 @@ package com.example.sampleproject.ui.evento
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.example.sampleproject.api.EventoCheckinPost
 import com.example.sampleproject.api.EventoResponse
 import com.example.sampleproject.data.EventosRepository
+import com.example.sampleproject.utils.Constantes.CHECK_IN_SUCESS
 import com.example.sampleproject.utils.Constantes.EVENTO
+import com.example.sampleproject.utils.Constantes.NETWORK_ERROR
 import com.example.sampleproject.utils.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -49,7 +52,35 @@ class EventoViewModel @ViewModelInject constructor(
         }
     }
 
+    fun checkIn(nome: String, email: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val response = eventosRepository.checkInEvento(
+                EventoCheckinPost(
+                    eventId = eventoArgs?.id ?: 0,
+                    name = nome,
+                    email = email
+                )
+            )
+
+            when(response){
+                is ResultWrapper.NetworkError ->{
+                    eventoChannel.send(EventoAction.OnCheckInError(NETWORK_ERROR))
+                }
+                is ResultWrapper.GenericError -> {
+                    eventoChannel.send(EventoAction.OnCheckInError(response.error))
+                }
+                is ResultWrapper.Success ->{
+                    eventoChannel.send(EventoAction.OnCheckInSucess(CHECK_IN_SUCESS))
+                }
+            }
+        }
+    }
+
     sealed class EventoAction(){
         data class NavigateToCheckinDialog(val evento:EventoResponse): EventoAction()
+        data class OnCheckInSucess(val msg: String): EventoAction()
+        data class OnCheckInError(val msg: String): EventoAction()
     }
+
+
 }

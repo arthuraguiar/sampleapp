@@ -23,15 +23,4 @@
             android:name="evento"
             app:argType="com.example.sampleproject.api.EventoResponse" />
     </fragment>
-    <dialog
-        android:id="@+id/checkInDialogFragment"
-        android:name="com.example.sampleproject.ui.checkindialog.CheckInDialogFragment"
-        android:label="CheckInDialogFragment" >
-        <argument
-            android:name="evento"
-            app:argType="com.example.sampleproject.api.EventoResponse" />
-    </dialog>
-    <action
-        android:id="@+id/action_global_checkInDialogFragment"
-        app:destination="@id/checkInDialogFragment" />
 </navigation>

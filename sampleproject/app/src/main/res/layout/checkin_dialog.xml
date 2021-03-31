@@ -67,4 +67,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/checkin_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
 </FrameLayout>

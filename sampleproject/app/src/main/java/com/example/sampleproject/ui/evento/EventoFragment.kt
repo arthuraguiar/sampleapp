@@ -1,17 +1,20 @@
 package com.example.sampleproject.ui.evento
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.example.sampleproject.R
 import com.example.sampleproject.api.EventoResponse
+import com.example.sampleproject.databinding.CheckinDialogBinding
 import com.example.sampleproject.databinding.FragmentEventoBinding
 import com.example.sampleproject.utils.formatToDate
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -21,6 +24,10 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
     private val viewModel: EventoViewModel by viewModels()
 
     private lateinit var binding: FragmentEventoBinding
+
+    private var dialog: AlertDialog? = null
+
+    private var dialogBinding: CheckinDialogBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +66,16 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
             viewModel.eventoAction.collect { eventoAction ->
                 when (eventoAction) {
                     is EventoViewModel.EventoAction.NavigateToCheckinDialog -> {
-                        val action =
-                            EventoFragmentDirections
-                                .actionGlobalCheckInDialogFragment(eventoAction.evento)
-                        findNavController().navigate(action)
+                        inflateFragment()
+                    }
+                    is EventoViewModel.EventoAction.OnCheckInSucess ->{
+                        dialogBinding?.checkinLoading?.visibility = View.GONE
+                        Snackbar.make(requireView(), eventoAction.msg, Snackbar.LENGTH_LONG).show()
+                        dialog?.dismiss()
+                    }
+                    is EventoViewModel.EventoAction.OnCheckInError ->{
+                        dialogBinding?.checkinLoading?.visibility = View.GONE
+                        Snackbar.make(requireView(), eventoAction.msg, Snackbar.LENGTH_LONG).show()
                     }
                 }
             }
@@ -86,6 +99,28 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
                 .error(R.drawable.ic_baseline_error_24)
                 .into(this)
         }
+    }
+
+    private fun inflateFragment(){
+        dialogBinding = CheckinDialogBinding.inflate(LayoutInflater.from(context))
+        val builder = AlertDialog.Builder(context)
+        builder.setView(dialogBinding?.root)
+
+        dialogBinding?.apply {
+            checkinButton.setOnClickListener {
+                checkinLoading.visibility = View.VISIBLE
+                viewModel.checkIn(
+                    nomeEditTextInput.text.toString(),
+                    emailEditTextInput.text.toString()
+                )
+            }
+            cancelCheckinButton.setOnClickListener {
+                dialog?.dismiss()
+                dialog = null
+            }
+        }
+        dialog = builder.create()
+        dialog?.show()
     }
 
 }
