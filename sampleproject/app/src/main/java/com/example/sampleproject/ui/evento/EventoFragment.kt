@@ -65,6 +65,9 @@ class EventoFragment : Fragment(R.layout.fragment_evento) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.eventoAction.collect { eventoAction ->
                 when (eventoAction) {
+                    is EventoViewModel.EventoAction.OnFetchEventoError ->{
+                        showSnackBarMsg(eventoAction.msg)
+                    }
                     is EventoViewModel.EventoAction.InflateCheckinDialog -> {
                         inflateFragment()
                     }

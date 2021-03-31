@@ -38,8 +38,10 @@ class EventoViewModel @ViewModelInject constructor(
             when (val response =
                 eventosRepository.getEvento(eventoArgs?.id ?: 0, Dispatchers.Main)) {
                 is ResultWrapper.NetworkError -> {
+                    eventoChannel.send(EventoAction.OnFetchEventoError(NETWORK_ERROR))
                 }
                 is ResultWrapper.GenericError -> {
+                    eventoChannel.send(EventoAction.OnFetchEventoError(response.error))
                 }
                 is ResultWrapper.Success -> {
                     response.value.run { _evento.value = this }
@@ -84,6 +86,7 @@ class EventoViewModel @ViewModelInject constructor(
     }
 
     sealed class EventoAction{
+        data class OnFetchEventoError(val msg: String): EventoAction()
         data class InflateCheckinDialog(val evento:EventoResponse): EventoAction()
         data class OnCheckInSucess(val msg: String): EventoAction()
         data class OnCheckInError(val msg: String): EventoAction()
